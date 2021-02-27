@@ -1,0 +1,10 @@
+{
+    "login": {
+        "form_title": "Iniciar sesión",
+        "login_button": "Login",
+        "profile_button": "Perfil",
+        "search_button": "Plazas",
+        "address_button": "Dirección",
+        "route_button": "Distancia"
+    }
+}

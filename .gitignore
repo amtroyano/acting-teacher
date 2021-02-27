@@ -351,3 +351,4 @@ MigrationBackup/
 
 *.code-workspace
 .vcode/
+.DS_Store
