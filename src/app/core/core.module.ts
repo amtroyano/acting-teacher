@@ -7,6 +7,7 @@ import { NgxModule } from '../ngx.module';
 
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { ErrorModule } from './errors/error.module';
 
 @NgModule({
     declarations: [
@@ -19,7 +20,8 @@ import { TranslateModule } from '@ngx-translate/core';
         HttpClientModule,
         MaterialModule,
         NgxModule,
-        TranslateModule
+        TranslateModule,
+        ErrorModule
     ],
     exports: [
         SpinnerComponent,

@@ -14,4 +14,6 @@ export class Vacant extends Base {
     provincia: string;
     puesto: string;
     tipo: string;
+    distancia: string;
+    tiempo: string;
 }

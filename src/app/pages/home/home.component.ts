@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { RestService } from 'src/app/core/services/rest.service';
-import { HttpHeaders, HttpClient, HttpParams} from '@angular/common/http';
-import { Vacants } from 'src/app/core/models/vacant/vacants.model';
+import { HttpHeaders, HttpParams} from '@angular/common/http';
 import { User } from 'src/app/core/models/user/user.model';
-import { OpenRoute } from 'src/app/core/models/openroute/openroute.model';
 import { environment } from '../../../environments/environment';
-import * as moment from 'moment';
-import 'moment-duration-format';
+import { Vacant } from 'src/app/core/models/vacant/vacant.model';
+import { Address } from 'src/app/core/models/user/address.model';
+import { Corp } from 'src/app/core/models/user/corp.model';
+import { Position } from 'src/app/core/models/user/position.model';
+import { VacantService } from 'src/app/services/vacant.service';
+import { RouteService } from 'src/app/services/route.service';
 
 @Component({
   selector: 'app-home',
@@ -17,12 +19,21 @@ export class HomeComponent implements OnInit {
 
   showSpinner: boolean;
   user: User;
+  showDistance: boolean;
+  vacants: Array<Vacant>;
+  displayedColumns: string[];
 
-  constructor(private restService: RestService, private http: HttpClient) { 
+  //{"idPlaza":84488,"idClave":1,"centro":"21700423 - I.E.S. San Antonio","provincia":"Huelva","localidad":"Bollullos Par del Condado","puesto":"00590017 - EDUCACION FISICA P.E.S.","fFinAus":"2021-04-09","tipo":"Sustitución","numPla":1,"participacion":"O","observaciones":null,"latitud":"37,33172677045383","longitud":"-6,538753509521484"}
+
+  constructor(private restService: RestService, private vacantService: VacantService, private routeService: RouteService) { 
+    this.showDistance = false;
+    this.vacants = new Array<Vacant>();
+    this.displayedColumns = ['idPlaza'];
   }
 
   ngOnInit() {
     this.login();
+    this.showDistance = false;
   }
 
   login() {
@@ -45,14 +56,13 @@ export class HomeComponent implements OnInit {
     payload.set('password', environment.password);
     this.restService.post('/educacion/sipri/acceso/idea', payload.toString(), httpOptions, true)
       .then((response: string) => {
-        console.log('La respuesta siempre es un 200, habría que averiguar como detectar error.');
-        let parser = new DOMParser();
-        let parsedHtml = parser.parseFromString(response, 'text/html');
-        console.log(parsedHtml);
-        console.log('llega');
-        this.profile();
+        if (this.checkLogin(response)) {
+          console.info('Identificación de usuario correcta con SIPRI.');
+          this.profile();
+        } else {
+          console.log('Error de login: mostrar error');
+        }
     });
-        
   }
 
   profile() {
@@ -68,47 +78,45 @@ export class HomeComponent implements OnInit {
 
     this.restService.get('/educacion/sipri/procedimiento/datospersonales', httpOptions, true)
       .then((response: string) => {
-        console.log('La respuesta siempre es un 200, habría que averiguar como parsear el contenido.');
-        let parser = new DOMParser();
-        let parsedHtml = parser.parseFromString(response, 'text/html');
-        let scripts = parsedHtml.getElementsByTagName("script");
-        console.log(JSON.parse(scripts[scripts.length - 1].innerHTML.replace('cargaValores(', '').replace(');', '')));
-        this.user = new User(JSON.parse(scripts[scripts.length - 1].innerHTML.replace('cargaValores(', '').replace(');', '')));
-        console.log(this.user);
-        this.address();
+        if (this.checkProfile(response)) {
+          console.log('Perfil de usuario recuperado correctamente de SIPRI.');
+        } else {
+          console.log('Error de perfil: mostrar error');
+        }
     });
-        
   }
 
   search() {
     this.restService.loadingSubscribe(result => {
       this.showSpinner = result;
     });
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type':  'application/x-www-form-urlencoded',
-        'X-Requested-With':  'XMLHttpRequest'
-      }),
-      withCredentials: true,
-      observe: 'response',
-      responseType: 'json'
-    };
-    let body = new URLSearchParams();
-    body.set('pos', '0');
-    body.set('limit', '10');
-    body.set('offset', '0');
-    body.set('puesto', '');
-    body.set('cuerpo', '');
-    body.set('provincia', '');
-    body.set('participacion', '');
-    body.set('tipo', '');
-
-    this.restService.post<Vacants>('/educacion/sipri/plazas/buscar', body.toString(), httpOptions, true)
-      .then((vacants: Vacants) => {
-        console.log(vacants.rows);
-        console.log(vacants.rows[0]);
+    this.vacantService.subscribe((vacants: Array<Vacant>) => {
+      console.log('Respuesta recibida ...');
+      vacants.forEach(vacant => {
+        this.vacants.push(vacant);
+        this.showDistance = true;
       });
+      console.log(this.vacants);
+      console.log('Comprobar si ha finalizado todas las peticiones para unsubscribirse y mostrar boton... ')
+    });
+    if (this.user.corps) {
+      this.user.corps.forEach(corp => {
+        if (corp.positions) {
+          corp.positions.forEach(position => {
+            console.log('TODO: Buscar vacantes por ' + corp.desc + (position ? ' y ' + position.desc : ''));
+            let body = this.vacantService.getSearchParams(this.vacants.length, corp, position);
+            console.log('Iniciando peticion de vacantes ...');
+            this.vacantService.search(body);
 
+          });
+
+        } else {
+          console.log('TODO: Buscar vacantes por ' + corp.desc);
+          let body = this.vacantService.getSearchParams(this.vacants.length, corp, null);
+          this.vacantService.search(body)
+        }
+      });
+    }
   }
 
   route() {
@@ -116,25 +124,11 @@ export class HomeComponent implements OnInit {
       this.showSpinner = result;
     });
 
-    this.user.addresses.forEach(address => {
-      let parameters = new HttpParams()
-          .append('api_key', environment.apiKey)
-          .append('start', address.longitude.toString() + "," + address.latitude.toString())
-          .append('end', "-6.077758766" + "," + "37.387447518");
-      
-      const httpOptions = {
-        observe: 'response',
-        responseType: 'json',
-        params: parameters
-      };
-      this.restService.get('/v2/directions/driving-car', httpOptions, true)
-        .then((openRoute: OpenRoute) => {
-          let distance = openRoute.features[0].properties.summary.distance / 1000;
-          let duration = openRoute.features[0].properties.summary.duration;
-          console.log(moment.duration(duration, "seconds").format("h:mm") + " horas");
-          console.log(distance + " kms");
-          console.log(duration + " horas");
-        });
+    this.vacants.forEach(vacant => {
+      this.user.addresses.forEach(address => {
+        console.log(vacant);
+        this.routeService.getRoute(vacant, address);
+      });
     });
   }
 
@@ -143,28 +137,30 @@ export class HomeComponent implements OnInit {
       this.showSpinner = result;
     });
 
-    this.user.addresses.forEach(address => {
-      let parameters = new HttpParams()
-        .append('api_key', environment.apiKey)
-        .append('address', address.address)
-        .append('postalcode', address.postalCode)
-        .append('locality', 'Bailen');
-
-      const httpOptions = {
-        observe: 'response',
-        responseType: 'json',
-        params: parameters
-      };
-    
-      this.restService.get('/geocode/search/structured', httpOptions, true)
-        .then((openroute: OpenRoute) => {
-          console.log(openroute);
-          console.log(openroute.features[0].geometry.coordinates);
-          this.user.addresses[0].longitude = openroute.features[0].geometry.coordinates[0];
-          this.user.addresses[0].latitude = openroute.features[0].geometry.coordinates[1];
-          console.log(this.user);
-        });
-    });
+    this.routeService.getAddress(this.user);
   }
 
+  private checkLogin(response: string) {
+    let parser = new DOMParser();
+    let parsedHtml = parser.parseFromString(response, 'text/html');
+    if (parsedHtml.forms[0]) {
+      return false;
+    }
+
+    return true;
+  }
+
+  private checkProfile(response: string) {
+    let parser = new DOMParser();
+    let parsedHtml = parser.parseFromString(response, 'text/html');
+    let scripts = parsedHtml.getElementsByTagName("script");
+    let script = scripts[scripts.length - 1].innerHTML.replace(/[\u0000-\u001F\u007F-\u009F]/g, "");
+    if (script.startsWith('cargaValores(')) {
+      this.user = new User(JSON.parse(scripts[scripts.length - 1].innerHTML.replace('cargaValores(', '').replace(');', '')));
+      this.address();
+      return true;
+    }
+
+    return false;
+  }
 }

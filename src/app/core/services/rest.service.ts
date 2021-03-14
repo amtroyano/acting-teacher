@@ -51,8 +51,6 @@ export class RestService {
             this.loading.emit(true);
             this.http.get<HttpResponse<T>>(path, options)
                 .subscribe((response: HttpResponse<T>) => {
-                    console.log('Llega');
-                    console.log(response);
                     this.removeRequest(uuidRequest);
                     resolver(response.body);
                     },
@@ -72,9 +70,8 @@ export class RestService {
             this.loading.emit(true);
             this.http.post<HttpResponse<T>>(path, data, options)
                 .subscribe((response: HttpResponse<T>) => {
+                    console.log('Se muestra error');
                     this.removeRequest(uuidRequest);
-                    console.log('Llega');
-                    console.log(response.headers);
                     resolver(response.body);
                     },
 

@@ -14,6 +14,7 @@ import { CoreModule } from './core/core.module';
 import { HomeModule } from './pages/home.module';
 import { HomeComponent } from './pages/home/home.component';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { ErrorModule } from './core/errors/error.module';
 
 const routes: Routes = [
     {

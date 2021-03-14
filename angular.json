@@ -56,7 +56,9 @@
           "options": {
             "browserTarget": "acting-teacher:build",
             "proxyConfig": "proxy.conf.json",
-            "ssl": true
+            "ssl": true,
+            "sslKey": "acting_teacher.key",
+            "sslCert": "acting_teacher.crt"
           },
           "configurations": {
             "production": {

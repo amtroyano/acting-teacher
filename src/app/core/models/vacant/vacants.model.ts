@@ -1,6 +1,6 @@
 import { Vacant } from './vacant.model';
 
 export class Vacants {
-    total: string;
+    total: number;
     rows: Array<Vacant>;
 }

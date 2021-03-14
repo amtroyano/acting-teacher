@@ -20,7 +20,9 @@ import {
     MatTabsModule,
     MatInputModule,
     MatDatepickerModule,
+    MatTableModule,
     MatTooltipModule,
+
     MAT_DATE_FORMATS,
     DateAdapter,
     MAT_DATE_LOCALE,
@@ -53,6 +55,7 @@ import { PaginatorI18n } from './core/paginatorI18n/paginatorI18n';
         MatBadgeModule,
         MatListModule,
         MatTabsModule,
+        MatTableModule,
         MatInputModule,
         MatDatepickerModule,
         MatMomentDateModule,
