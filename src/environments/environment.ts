@@ -6,8 +6,8 @@ export const environment = {
   production: false,
   username: 'msolqui124',
   password: 'MCASJ/20',
-  apiKey: '5b3ce3597851110001cf62487c08aeb333f84f13a9a810835aa18a30'
-
+  apiKey: '5b3ce3597851110001cf62487c08aeb333f84f13a9a810835aa18a30',
+  delay: 1700
 };
 
 /*

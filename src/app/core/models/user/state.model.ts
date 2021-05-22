@@ -1,13 +1,13 @@
 import { Base } from '../base.model';
 
-export class Position extends Base {
-    positionId: string;
+export class State extends Base {
+    stateId: number;
     desc: string;
     checked: boolean;
 
-    constructor(positionId: string, desc: string) {
+    constructor(stateId: number, desc: string) {
         super();
-        this.positionId = positionId;
+        this.stateId = stateId;
         this.desc = desc;
         this.checked = true;
     }

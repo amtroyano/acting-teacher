@@ -1,0 +1,20 @@
+@import '../scss/greenTheme/greenTheme';
+
+.theme {
+    background: $bg-color;
+    height: 100%;
+}
+.header {
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    margin-bottom: $offset;
+}
+
+.content {
+    position: relative;
+    top: $header-size + $offset;
+    height: calc(100% - (#{$header-size + $offset}));
+}
+

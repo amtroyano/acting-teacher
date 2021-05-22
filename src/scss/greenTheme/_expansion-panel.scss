@@ -1,0 +1,8 @@
+.mat-expansion-indicator::after {
+    color: $font-disabled;
+    margin: 0 2px;
+}
+
+.mat-expansion-panel-body {
+    padding: 0 !important;
+}

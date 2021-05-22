@@ -1,0 +1,150 @@
+.ngx-datatable.material {
+
+    .datatable-header {
+        background-color: $bg-table-header;
+        height: auto !important;
+        @include unselectable;
+
+        .resize-handle {
+            border-right: solid 2px $border-resise-column;
+        }
+
+        .move {
+            span.datatable-header-cell-label {
+                cursor: move;
+            }
+        }
+
+        .datatable-header-cell,
+        .datatable-header-cell.sortable {
+            .datatable-header-cell-wrapper {
+                cursor: inherit;
+            }
+        }
+
+        .datatable-header-cell:first-child {
+            border: none;
+        }
+
+        .datatable-header-cell {
+            background-color: $bg-table-header;
+            color: $font-table-header;
+            font-size: large;
+            text-transform: uppercase;
+            border-right: 1px solid $border-column-header;
+
+            .sort-btn {
+                font-size: larger;
+            }
+        }
+    }
+
+    .datatable-body {
+        * {
+            cursor: default;
+        }
+
+        .datatable-body-row {
+            .datatable-body-cell:first-child {
+                border: none;
+                white-space: normal;
+                overflow: visible;
+                text-overflow: initial;
+            }
+
+            .ellipsis {
+                .datatable-body-cell-label {
+                    @include ellipsis;
+                    display: block;
+                }
+            }
+
+            .datatable-body-cell {
+                color: $font-table-cell;
+                border-right: 1px solid $border-column;
+            }
+
+            .datatable-body-cell:last-child {
+                border-right: none;
+            }
+        }
+
+        .datatable-row-even {
+            background-color: $bg-table-row-even;
+        }
+    
+        .datatable-row-odd {
+            background-color: $bg-white;
+        }
+
+        .datatable-row-detail {
+            border-top: 1px solid $border-column;
+            background: transparent;
+            padding: 0;
+            box-sizing: border-box;
+
+            .row-detail {
+                width: 100%;
+                height: 100%;
+                padding: 10px 30px;
+                display: flex;
+                flex-wrap: wrap;
+                font-size: $font-size;
+                color: $font-color;
+                white-space: pre-wrap;
+                overflow: hidden;
+
+                .detail-left {
+                    flex: 1 1 10%;
+                    word-wrap: break-word;
+                    word-break: break-all;
+                }
+                .detail-right {
+                    flex: 1 1 30%;
+                    word-wrap: break-word;
+                    word-break: break-all;
+                }
+
+                .detail-right-center {
+                    flex: 1 1 30%;
+                    word-wrap: break-word;
+                    word-break: break-all;
+                }
+
+                .detail-left-center {
+                    flex: 1 1 30%;
+                    word-wrap: break-word;
+                    word-break: break-all;
+                }
+
+                .detail-row-title {
+                    color: $font-title-detail;
+                    font-weight: 800;
+                }
+
+                .detail-row-content  {
+                    padding-top: 6px;
+                    padding-left: 10px;
+                    
+                    div {
+                         height: 18px;
+                    }
+                }
+            }
+        }
+    }
+
+    .row {
+        font-size: large;
+        color: $font-disabled;
+        text-decoration: none;
+        cursor: pointer;
+    }
+}
+
+.ngx-datatable.bootstrap:not(.cell-selection) .datatable-body-row:hover,
+.ngx-datatable.material:not(.cell-selection) .datatable-body-row:hover .datatable-row-group
+{ 
+   background: $bg-table-hover;
+}
+

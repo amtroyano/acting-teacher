@@ -1,10 +1,18 @@
 {
+    "header": {
+        "vacants": "Vacantes",
+        "requests": "Solicitudes",
+        "profile": "Perfil",
+        "logout": "Cerrar",
+        "login": "Conectar"
+    },
     "login": {
         "form_title": "Iniciar sesión",
         "login_button": "Login",
         "profile_button": "Perfil",
         "search_button": "Plazas",
         "address_button": "Dirección",
-        "route_button": "Distancia"
+        "route_button": "Distancia",
+        "save_button": "Guardar"
     }
 }

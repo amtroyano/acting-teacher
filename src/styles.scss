@@ -1,3 +1,9 @@
+@import '~@swimlane/ngx-datatable/index.css';
+@import '~@swimlane/ngx-datatable/themes/material.scss';
+@import '~@swimlane/ngx-datatable/assets/icons.css';
+
+@import './scss/greenTheme/greenTheme.scss';
+
 html, body {
     margin: 0;
     padding: 0;
@@ -11,3 +17,4 @@ app-root {
     padding: 0;
     height: 100%;
 }
+

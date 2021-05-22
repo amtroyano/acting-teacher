@@ -1,10 +1,15 @@
 import { HttpHeaders } from '@angular/common/http';
 import { Injectable, EventEmitter } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, throwError } from 'rxjs';
+import { promise } from 'selenium-webdriver';
+import { Message } from '../core/models/message.model';
 import { Corp } from '../core/models/user/corp.model';
 import { Position } from '../core/models/user/position.model';
+import { JobOpening } from '../core/models/vacant/jobopening.model';
+import { School } from '../core/models/vacant/school.model';
 import { Vacant } from '../core/models/vacant/vacant.model';
 import { Vacants } from '../core/models/vacant/vacants.model';
+import { MessageService } from '../core/services/message.service';
 import { RestService } from '../core/services/rest.service';
 
 @Injectable({
@@ -16,7 +21,7 @@ export class VacantService {
     private loaded: EventEmitter<any>;
     private loadedSubscription: Subscription;
 
-    constructor(private restService: RestService) {
+    constructor(private restService: RestService, private messageService: MessageService) {
         this.loaded = new EventEmitter();
     }
 
@@ -25,17 +30,20 @@ export class VacantService {
         body.set('pos', '0');
         body.set('limit', '1000');
         body.set('offset', offset+"");
-        body.set('puesto', position.positionId);
+        if (position) {
+            body.set('puesto', position.positionId);
+        } else {
+            body.set('puesto', '');
+        }
         body.set('cuerpo', corp.corpId+"");
         body.set('provincia', '');
         body.set('participacion', '');
         body.set('tipo', '');
-        console.log('Parametros de búsqueda: ' + body.toString());
 
         return body;
     }
 
-    subscribe(callback: (result) => void) {
+    subscribe(callback: (result: any) => void) {
         this.loadedSubscription = this.loaded.subscribe(result => {
             callback(result);
         });
@@ -58,35 +66,37 @@ export class VacantService {
         responseType: 'json'
         };
         
-        console.log('Iniciando petición ...');
-        this.searchVacants(new Array<Vacant>(), body, httpOptions);
-
+        return this.searchVacants(new Array<Vacant>(), body, httpOptions)
     }
 
-    private searchVacants(vacants: Array<Vacant>, body: URLSearchParams, options: object): Array<Vacant>  {
-        console.log('searchVacants');
-        this.restService.post<Vacants>('/educacion/sipri/plazas/buscar', body.toString(), options, true)
+    private searchVacants(vacants: Array<Vacant>, body: URLSearchParams, options: object): Promise<Array<Vacant>> {
+        return this.restService.post<Vacants>('/educacion/sipri/plazas/buscar', body.toString(), options, true)
             .then((vacantsResult: Vacants) => {
-                console.log('TODO: Controlar si mostrar el botón de distancia');
                 vacantsResult.rows.forEach(vacant => {
+                    //vacant.index = vacants.length + 1;
+                    if (!vacant.fFinAus) {
+                        vacant.fFinAus = 'Sin determinar';
+                    } else {
+                        let fecha = vacant.fFinAus.split('-');
+                        vacant.fFinAus = fecha[2] + '-' + fecha[1] + '-' + fecha[0];
+                    }
+                    vacant.school = new School(vacant.centro);
+                    vacant.jobOpening = new JobOpening(vacant.puesto);
                     vacants.push(vacant);
                 });
-                console.log('Longitud de la respuesta: ' + vacants.length);
-              if (vacantsResult.total > vacants.length) {
-                console.info('TODO: Seguir buscando');
-                body.set('offset', vacants.length+"");
-                console.log('Comenzando recursividad ...');
-                this.searchVacants(vacants, body, options);
-                console.log('Final');
+                if (vacantsResult.total > vacants.length) {
+                    console.info('TODO: Seguir buscando');
+                    body.set('offset', vacants.length + "");
+                    console.log('Comenzando recursividad ...');
+                    this.searchVacants(vacants, body, options);
+                    console.log('Final');
 
-              } else {
-                console.log('TODO: Setear las vacantes en un service data para que esté disponible en la sesión: showDistance no lo conoce');
-                console.log('TODO: Subscribirse a este servicio y así tener los datos cuando finalicen');
-                this.loaded.emit(vacants);
-              }
+                } else {
+                    this.loaded.emit(vacants);
+                }
+
+                return vacants;
             });
-
-            return new Array<Vacant>();
     }
 
 }

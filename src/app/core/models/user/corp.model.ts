@@ -11,6 +11,7 @@ export class Corp extends Base {
         super();
         this.corpId = corpId;
         this.desc = desc;
+        this.positions = new Array<Position>();
         if (positions) {
             this.positions = positions;
         }

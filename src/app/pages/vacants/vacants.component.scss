@@ -1,0 +1,204 @@
+@import '../../../scss/greenTheme/greenTheme';
+
+.vacants-container {
+    padding: 12px;
+    width: 100%;
+    box-sizing: border-box;
+
+    .sorting-preference-container {
+        @include shadowBox;
+        color: $font-disabled;
+        cursor: default;
+        padding: 6px 12px;
+        font-size: $font-size - 1;
+        margin: 6px 0;
+
+        ol {
+            margin: 0;
+
+            li {
+                list-style: none;
+            }
+        }
+    }
+
+    .sorting-preference-container {
+        display: flex;
+        align-items: center;
+
+        ol {
+            padding-inline-start: 12px;
+        }
+
+        li {
+            float: left;
+            margin-right: 6px;
+
+            &::after {
+                content: ">";
+                margin-left: 6px;
+            }
+
+            &:last-child::after {
+                content: "";
+            }
+        }
+    }
+
+    .only-expanse-panel {
+        display: block;
+        margin: 6px 0;
+        @include shadowBox;
+        padding: 6px 12px;
+        background: $bg-color;
+        font-size: $font-size - 1;
+
+        .expanse-panel {
+            background: inherit;
+            border-radius: 0;
+            box-shadow: none;
+            color: $font-disabled;
+
+            .expanse-panel-header {
+                height: auto;
+                padding: 0;
+
+                &:hover {
+                    background: inherit;
+                }
+    
+                .expanse-panel-title {
+                    align-items: center;
+                    color: inherit;
+                    font-size: $font-size - 1;
+                }
+            }
+        }
+
+        .filter-container {
+            margin: 0 30px;
+            display: flex;
+            font-size: $font-size - 1;
+
+            .filter-block {
+                margin-block-end: 0;
+                margin-block-start: 0;
+                list-style: none;
+
+                .item-list {
+                    list-style: none;
+                }
+
+                .container-checkbox {
+                    padding-left: 18px;
+                    position: relative;
+                    @include unselectable;
+                    cursor: pointer;
+                }
+                
+                input {
+                    opacity: 0;
+                    position: absolute;
+                    height: 0;
+                    width: 0;
+        
+                    &:checked ~ .checkmark {
+                        background-color: $font-disabled;
+                    }
+                    &:hover ~ .checkmark {
+                        background-color: $bg-checkbox-hover;
+                    }
+        
+                    &:checked ~ .checkmark:after {
+                        display: block;
+                    }
+                }
+                
+                .checkmark {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    height: 12px;
+                    width: 12px;
+                    background: #d8f3dc;
+                    border: 1px solid $font-disabled;
+        
+                    &:hover {
+                        background-color: $bg-checkbox-hover;
+                    }
+                }
+                
+                .checkmark:after {
+                    content: "";
+                    position: absolute;
+                    display: none;
+                }
+                
+                .checkmark:after {
+                    left: 4px;
+                    top: -1px;
+                    width: 3px;
+                    height: 10px;
+                    border: solid white;
+                    border-width: 0 2px 2px 0;
+                    -webkit-transform: rotate(45deg);
+                    -ms-transform: rotate(45deg);
+                    transform: rotate(45deg);
+                }
+            }
+        }
+    }
+
+    .datatable-toolbar {
+        background: transparent;
+        color: $toolbar-button-color;
+        height: $toolbar-height;
+        margin: 6px 0;
+        padding: 0 12px;
+
+        ul {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            height: 100%;
+
+            li {
+                list-style: none;
+                height: inherit;
+                padding: 0px 6px;
+
+                a.navButton {
+                    display: flex;
+                    align-items: center;
+                    cursor: pointer;
+                    color: inherit;
+                    text-decoration: none;
+                    height: inherit;
+
+                    &:hover {
+                        color: $toolbar-button-color-hover;
+                    }
+                }
+            
+                a.disabled {
+                    color: $toolbar-button-color-disabled;
+
+                    &:hover {
+                        color: $toolbar-button-color-disabled;
+                    }
+                }
+
+                .separator {
+                    border-right: 1px solid $toolbar-separator;
+                }
+            }
+
+            li:first-child {
+                padding-left: 0;
+            }
+        }
+    }
+}
+
+

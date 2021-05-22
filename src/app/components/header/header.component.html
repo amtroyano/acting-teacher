@@ -1,0 +1,49 @@
+<app-spinner [show]="showSpinner"></app-spinner>
+
+<header class="header-container">
+    <div class="header-logo">
+        <div class="title">
+            <a class="home" routerLink="/vacants" matTooltip="Acting Teacher {{version}}" [matTooltipShowDelay]="1000" matTooltipPosition="right">
+                <img src="assets/images/aprender.png" class="logo" alt="Acting Teacher Logo"/>
+                <span class="noselect">&nbsp;&nbsp;Acting Teacher</span>
+            </a>
+        </div>
+        <div class="wellcome">{{wellcome}}</div>
+    </div>
+
+    <mat-toolbar class="menuRight">
+        <ul>
+            <li id="vacants" matTooltip="Acting Teacher {{version}}" [matTooltipShowDelay]="2000" matTooltipPosition="right" [ngClass]="selectedOption === 'vacants' ? 'selected' : ''" (mouseenter)="hoverIn($event)" (mouseleave)="hoverOut($event)" (click)="changeSelectedOption('vacants')">
+                <a routerLink="/vacants" class="navButton">
+                    <mat-icon class="navIcon">account_balance</mat-icon>
+                    <div class="navText noselect">{{'header.vacants' | translate}}</div>
+                </a>
+            </li>
+            <li id="requests" matTooltip="Acting Teacher {{version}}" [matTooltipShowDelay]="2000" matTooltipPosition="right" [ngClass]="selectedOption === 'requests' ? 'selected' : ''" (mouseenter)="hoverIn($event)" (mouseleave)="hoverOut($event)" (click)="changeSelectedOption('requests')">
+                <a routerLink="/requests" class="navButton">
+                    <mat-icon class="navIcon">gavel</mat-icon>
+                    <div class="navText noselect">{{'header.requests' | translate}}</div>
+                </a>
+            </li>
+            <li id="profile" matTooltip="Acting Teacher {{version}}" [matTooltipShowDelay]="2000" matTooltipPosition="right" [ngClass]="{'selected':selectedOption === 'profile', 'disabled':!isLogin}" (mouseenter)="hoverIn($event)" (mouseleave)="hoverOut($event)" (click)="changeSelectedOption('profile')">
+                <a routerLink="/profile" class="navButton">
+                    <mat-icon class="navIcon">manage_accounts</mat-icon>
+                    <div class="navText noselect">{{'header.profile' | translate}}</div>
+                </a>
+            </li>
+            <li id="logout" *ngIf="isLogin" matTooltip="Acting Teacher {{version}}" [matTooltipShowDelay]="2000" matTooltipPosition="right" (mouseenter)="hoverIn($event)" (mouseleave)="hoverOut($event)" (click)="logout($event)">
+                <a class="navButton">
+                    <mat-icon class="navIcon">power_settings_new</mat-icon>
+                    <div class="navText noselect">{{'header.logout' | translate}}</div>
+                </a>
+            </li>
+            <li id="login" *ngIf="!isLogin" matTooltip="Acting Teacher {{version}}" [matTooltipShowDelay]="2000" matTooltipPosition="right" (mouseenter)="hoverIn($event)" (mouseleave)="hoverOut($event)" (click)="login()">
+                <a class="navButton">
+                    <mat-icon class="navIcon">power_settings_new</mat-icon>
+                    <div class="navText noselect">{{'header.login' | translate}}</div>
+                </a>
+            </li>
+        </ul>
+    </mat-toolbar>
+</header>
+    

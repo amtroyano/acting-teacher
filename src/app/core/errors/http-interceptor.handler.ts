@@ -1,67 +1,37 @@
 import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Injectable, ErrorHandler, Injector } from '@angular/core';
-import { Router } from '@angular/router';
+import { Injectable, Injector } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { Observable, throwError } from 'rxjs';
 import { catchError, finalize, retry } from "rxjs/operators";
+import { Message } from '../models/message.model';
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class HttpInterceptorHandler implements HttpInterceptor {
-  constructor(private injector: Injector) {
+
+  constructor(private injector: Injector, private toastSerCvice: ToastrService) {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    /*let router = this.injector.get(Router);
-    console.log('URL: ' + router.url);
-    console.log(request);
-    console.log(next);
-
-    switch(request.responseType) {
-      case 'text':
-        console.log('Error para peticiones tipo text');
-        break;
-
-      case 'json':
-        console.log('Error para peticiones tipo JSON');
-        break;
-
-      default:
-        break;
-    }*/
-
     return next.handle(request).pipe(
-      
-        retry(1),
- 
+        retry(0),
         catchError((error: HttpErrorResponse) => {
- 
-          let errorMessage = '';
- 
+          let message = null;
           if (error.error instanceof ErrorEvent) {
- 
-            console.log('client-side error');
- 
-            errorMessage = `Error: ${error.error.message}\nErrorEvent`;
- 
+            message = new Message(error.error.message, null, error.error.lineno, error.error.error);
+
+          } else if (error.status !== 200) {
+            message = new Message(error.message, error.statusText, error.status, error.error.error);
+
           } else {
- 
-            console.log('server-side error');
- 
-            errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}\nErrorHttp`;
- 
+            message = new Message(error.message, null, error.status);
           }
- 
-          window.alert(errorMessage);
-          return throwError(errorMessage);
- 
+
+          return throwError(message);
         })
- 
-      )
- 
+      );
   }
-
-
 }

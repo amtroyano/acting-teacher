@@ -3,7 +3,8 @@ import { HttpClient, HttpResponse, HttpErrorResponse } from '@angular/common/htt
 import { ToastrService } from 'ngx-toastr';
 import { UUID } from 'angular2-uuid';
 
-import { Subscription } from 'rxjs';
+import { Subscription, throwError } from 'rxjs';
+import { Message } from '../models/message.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,19 +18,9 @@ export class RestService {
     private requests: Array<any>;
     private loadingSubscription: Subscription;
 
-    constructor(
-        private http: HttpClient,
-        private toastSerCvice: ToastrService
-    ) {
+    constructor(private http: HttpClient) {
         this.loading = new EventEmitter();
         this.requests = new Array<Request>();
-    }
-
-    private _showError(error: HttpErrorResponse) {
-        this.toastSerCvice.error('<br>' + error.message, error.status + ' - ' + error.statusText, {
-            enableHtml: true
-        });
-                
     }
 
     loadingSubscribe(callback: (result) => void) {
@@ -47,40 +38,39 @@ export class RestService {
     get<T>(path: string, options?: {},locked?: boolean): Promise<{}> {
         const uuidRequest = this.pushRequest(path, locked);
 
-        return new Promise(resolver => {
+        return new Promise((resolver, reject) => {
             this.loading.emit(true);
             this.http.get<HttpResponse<T>>(path, options)
                 .subscribe((response: HttpResponse<T>) => {
                     this.removeRequest(uuidRequest);
                     resolver(response.body);
-                    },
-
-                    (error: HttpErrorResponse) => {
-                        this.removeRequest(uuidRequest);
-                        this._showError(error);
-                    }
-                );
+                },
+                (message: Message) => {
+                    this.removeRequest(uuidRequest);
+                    reject(message);
+                }
+            );
         });
     }
 
     post<T>(path: string, data: any, options?: {}, locked?: boolean): Promise<{}> {
         const uuidRequest = this.pushRequest(path, locked);
         
-        return new Promise(resolver => {
-            this.loading.emit(true);
+        return new Promise((resolver, reject) => {
+            //this.loading.emit(true);
             this.http.post<HttpResponse<T>>(path, data, options)
                 .subscribe((response: HttpResponse<T>) => {
-                    console.log('Se muestra error');
                     this.removeRequest(uuidRequest);
                     resolver(response.body);
-                    },
-
-                    (error: HttpErrorResponse) => {
-                        this.removeRequest(uuidRequest);
-                        this._showError(error);
-                    }
-                )
+                },
+                (message: Message) => {
+                    this.removeRequest(uuidRequest);
+                    reject(message);
+                }
+            )
         });
+
+
     }
 
     private pushRequest(path: string, locked: boolean) {

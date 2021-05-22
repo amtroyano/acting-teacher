@@ -1,39 +1,47 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { ToastrModule } from 'ngx-toastr';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
-import { MaterialModule } from './material.module';
-
 import { CoreModule } from './core/core.module';
 
-import { HomeModule } from './pages/home.module';
-import { HomeComponent } from './pages/home/home.component';
+import { HeaderComponent } from './components/header/header.component';
+import { PagesModule } from './pages/pages.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { ErrorModule } from './core/errors/error.module';
+import { VacantsComponent } from './pages/vacants/vacants.component';
+import { RequestsComponent } from './pages/requests/requests.component';
+import { ProfileComponent } from './pages/profile/profile.component';
+import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
     {
-        path: '**',
-        component: HomeComponent
+        path: 'vacants',
+        component: VacantsComponent
+    },
+    {
+        path: 'requests',
+        component: RequestsComponent
+    },
+    {
+        path: 'profile',
+        component: ProfileComponent
     }
-];
-
+  ];
+  
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        HeaderComponent
     ],
     imports: [
         BrowserModule,
         CoreModule,
-        HomeModule,
-        BrowserAnimationsModule,
-        MaterialModule,
         HttpClientModule,
+        PagesModule,
+        BrowserAnimationsModule,
         ToastrModule.forRoot(),
         TranslateModule.forRoot({
             loader: {
@@ -43,10 +51,10 @@ const routes: Routes = [
             }
         }),
         RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })
+        
     ],
     exports: [
-        CoreModule,
-        RouterModule
+        CoreModule
     ],
     providers: [],
     bootstrap: [AppComponent]

@@ -1,0 +1,296 @@
+@import '../../../scss/greenTheme/greenTheme';
+
+.container {
+    height: 100%;
+}
+
+$margin-content: 24px;
+.tabs-container {
+    height: inherit;
+    
+    .mat-tab-header {
+        border-bottom: 1px solid $bg-tab;
+    }
+
+    .mat-tab-label-active {
+        color: $font-tab-selected !important;
+    }
+
+    .mat-tab-label {
+        color: $font-title-tab;
+    }
+
+    .mat-tab-label-active,
+    .mat-tab-label {
+        border-right: 1px solid $bg-tab;
+        opacity: 1;
+    }
+
+    .mat-tab-list {
+        .mat-ink-bar {
+            background: $bg-tab;
+        }
+    }
+
+    .content,
+    .corp,
+    .position {
+        margin: $margin-content;
+        color: $font-color;
+        cursor: default;
+        @include unselectable;
+        display: flex;
+        box-sizing: border-box;
+        width: calc(100% - #{$margin-content * 2});
+
+        .title {
+            text-align: center;
+            margin: 12px 0;
+            color: $font-title-tab;
+        }
+
+        .drag-drop,
+        .group-corp {
+            overflow: auto;
+            display: block;
+            @include shadowBox;
+            padding: 12px;
+            height: inherit;
+            box-sizing: border-box;
+        }
+
+        .drag-drop {
+            li {
+                color: $font-color;
+                font-size: $font-size;
+                list-style: none;
+                text-transform: uppercase;
+                background: $bg-table-row-even;
+                margin: 8px 6px;
+                padding: 8px 15px;
+                border-radius: 6px;
+                cursor: move;
+
+                &:hover {
+                    background: $bg-table-hover;
+                }
+            }
+        }
+
+        .group-corp {
+            li {
+                color: $font-color;
+                font-size: $font-size;
+                list-style: none;
+                text-transform: uppercase;
+                margin: 8px 6px;
+                padding: 8px 15px;
+            }
+
+            .noshadow {
+                box-shadow: none;
+            }
+
+            .group-title {
+                text-align: center;
+                margin: 12px 0 0 0;
+                color: $font-disabled;
+                font-size: $font-size;
+                font-weight: 800;
+            }
+        }
+    }
+
+    .content {
+        .block {
+
+            .max-width {
+                width: 100%;
+                padding-right: 64px;
+                box-sizing: border-box;
+            }
+            
+            h5 {
+                margin: 3px 0;
+                color: $font-labels;
+            }
+    
+            .mat-form-field-infix {
+                border-top: 0;
+            }
+    
+            .mat-form-field-underline {
+                background: $font-labels;
+            }
+    
+            input.mat-input-element {
+                font-style: italic;
+                cursor: default;
+                flex-grow: 1;
+            }
+
+            .vertical-list {
+                display: table;
+            }
+
+            $indent: 16px;
+            .indent {
+                padding-left: $indent;
+            }
+
+            .group {
+                display: flex;
+
+                & mat-form-field:last-child {
+                    padding-left: $indent;
+                }
+
+                & .mat-form-field {
+                    box-sizing: border-box;
+                }
+            }
+
+            .geolocation {
+                padding-left: $indent;
+
+                .group div {
+                    flex-grow: 1;
+
+                    & .mat-form-field {
+                        display: block;
+                    }
+                }
+            }
+        }
+
+        .entity {
+            flex-grow: .3;
+        }
+
+        .addresses {
+            flex-grow: .6;
+
+            .city {
+                  display: flex;
+                  width: auto !important;
+
+                & .mat-form-field:first-child {
+                    flex-grow: .8;
+                }
+
+                & .mat-form-field:last-child {
+                    flex-grow: .2;
+                    width: 0;
+                }
+            }
+
+            .region {
+                display: block;
+            }
+        }
+
+        .phones {
+            flex-grow: .1;
+
+            & .mat-form-field {
+                display: block;
+            }
+
+            .max-width {
+                padding-right: 0;
+            }
+        }
+
+        .entity,
+        .address {
+            .mat-form-field {
+                display: block;
+            }
+        }
+    }
+
+    .corp {
+        .available,
+        .membership {
+            flex-grow: .4;
+        }
+
+        .buttons {
+            flex-grow: .2;
+        }
+    }
+
+    .position {
+        height: calc(100% - #{$margin-content});
+        overflow: hidden;
+        margin-bottom: 0;
+
+        .list {
+            flex-grow: .15;
+
+            li {
+                cursor: default;
+
+                &.selected {
+                    background: $bg-table-hover;
+                }
+            }
+        }
+
+        .positions {
+            flex-grow: .85;
+            margin-left: 32px;
+            display: flex;
+            height: inherit;
+
+            .available {
+                height: inherit;
+                flex-grow: .6;
+
+                ul {
+                    margin: 0;
+                }
+            }
+
+            .membership {
+                flex-grow: .4;
+            }
+
+            .buttons {
+                flex-grow: .2;
+            }
+
+            .cursor-normal {
+                cursor: default;
+            }
+        }
+    }
+}
+
+[draggable] {
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+    /* Required to make elements draggable in old WebKit */
+    -khtml-user-drag: element;
+    -webkit-user-drag: element;
+}
+
+.cdk-drag-placeholder {
+    opacity: .2;
+}
+
+.cdk-drag-preview {
+    box-sizing: border-box;
+    text-transform: uppercase;
+    background: $bg-table-hover;
+    border-radius: 6px;
+    list-style: none;
+    color: $font-color;
+    font-size: $font-size;
+    display: flex;
+    align-items: center;
+    padding: 8px 15px;
+    
+}

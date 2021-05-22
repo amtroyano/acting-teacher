@@ -1,0 +1,148 @@
+<div class="container">
+  <mat-tab-group mat-align-tabs="start" class="tabs-container">
+
+    <mat-tab label="Datos personales">
+      <div class="content">
+        
+        <div class="block entity">
+          <div class="max-width">
+            <h5>Nombre</h5>
+            <mat-form-field class="example-full-width">
+              <input matInput value="{{user.name}}" [readonly]="true">
+            </mat-form-field>
+
+            <h5>Primer apellido</h5>
+            <mat-form-field class="example-full-width">
+              <input matInput value="{{user.firstName}}" [readonly]="true">
+            </mat-form-field>
+
+            <h5>Segundo apellido</h5>
+            <mat-form-field class="example-full-width">
+              <input matInput value="{{user.lastName}}" [readonly]="true">
+            </mat-form-field>
+
+            <h5>Correo electrónico</h5>
+            <mat-form-field class="example-full-width">
+              <input matInput value="{{user.email}}" [readonly]="true">
+            </mat-form-field>
+
+            <h5>DNI</h5>
+            <mat-form-field class="example-full-width">
+              <input matInput value="{{user.cardId}}" [readonly]="true">
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="block addresses">
+          <div *ngFor="let address of user.addresses; index as i;" class="max-width">
+            <h5>Dirección {{i+1}}</h5>
+            <div class="indent">
+              <div class="address">
+                <mat-form-field class="example-full-width" class="vertical-list">
+                  <input matInput value="{{address.address}}" [readonly]="true">
+                </mat-form-field>
+              </div>
+              <div class="group city">
+                <mat-form-field class="example-full-width" class="vertical-list">
+                  <input matInput value="{{address.city}}" [readonly]="true">
+                </mat-form-field>
+                <mat-form-field class="example-full-width postalCode" class="vertical-list">
+                  <input matInput value="{{address.postalCode}}" [readonly]="true">
+                </mat-form-field>
+              </div>
+              <mat-form-field class="example-full-width" class="vertical-list region">
+                <input matInput value="{{address.region}}" [readonly]="true">
+              </mat-form-field>
+            </div>
+            <div class="geolocation">
+              <h5>Geolocalización</h5>
+              <div class="group">
+                <div>
+                  <h5 class="indent">Longitud</h5>
+                  <mat-form-field class="example-full-width" class="vertical-list">
+                    <input matInput value="{{address.longitude}}" [readonly]="true">
+                  </mat-form-field>
+                </div>
+              <div>
+                <h5 class="indent">Latitud</h5>
+                <mat-form-field class="example-full-width" class="vertical-list">
+                  <input matInput value="{{address.latitude}}" [readonly]="true">
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <div class="block phones">
+          <div class="max-width">
+            <h5>Teléfonos</h5>
+            <mat-form-field *ngFor="let phone of user.phones" class="example-full-width" class="vertical-list">
+              <input matInput value="{{phone.phoneNumber}}" [readonly]="true">
+            </mat-form-field>
+          </div>
+        </div>
+
+      </div>
+
+    </mat-tab>
+
+    <mat-tab label="Cuerpos">
+      <div class="corp">
+        <div class="membership">
+          <h4 class="title">Pertenencia a cuerpos</h4>
+          <ul class="drag-drop" #availables="cdkDropList" [cdkDropListData]="user.corps" [cdkDropListConnectedTo]="[selects]" (cdkDropListDropped)="drop($event)" cdkDropList>
+            <li *ngFor="let corp of user.corps" cdkDrag>{{corp.desc}} - {{corp.corpId}}</li>
+          </ul>
+        </div>
+        <div class="buttons">Botones</div>
+        <div class="available">
+          <h4 class="title">Cuerpos disponibles</h4>
+          <ul class="drag-drop" #selects="cdkDropList" [cdkDropListData]="corps" [cdkDropListConnectedTo]="[availables]" (cdkDropListDropped)="drop($event)" cdkDropList>
+            <li *ngFor="let corp of corps" cdkDrag>{{corp.desc}} - {{corp.corpId}}</li>
+          </ul>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Puestos">
+      <div class="position">
+
+        <div class="list">
+          <h4 class="title">Listado de cuerpos</h4>
+          <ul class="drag-drop">
+            <li *ngFor="let corp of user.corps" (click)="selectCorp($event, corp)">{{corp.desc}} - {{corp.corpId}}</li>
+          </ul>
+        </div>
+
+        <div class="positions">
+          <div class="membership">
+            <h4 class="title">Puestos del cuerpo seleccionado</h4>
+            <ul class="drag-drop" #availablesPositions="cdkDropList" [cdkDropListData]="userPositions" [cdkDropListConnectedTo]="[selectedPositions]" cdkDropList (cdkDropListDropped)="addPositions($event)">
+              <li *ngFor="let position of userPositions" cdkDrag>{{position.desc}} - {{position.positionId}}</li>
+            </ul>
+          </div>
+          <div class="buttons">Botones</div>
+          <div class="available">
+            <h4 class="title">Puestos disponibles</h4>
+             <!--<ul class="group-corp" >
+             <li *ngFor="let corp of corps">
+                <div class="group-title">{{corp.desc}}</div>-->
+                <ul class="drag-drop noshadow" #selectedPositions="cdkDropList" [cdkDropListData]="positions" [cdkDropListConnectedTo]="[availablesPositions]" cdkDropList (cdkDropListDropped)="removePositions($event)">
+                  <div *ngFor="let position of positions" >
+                    <li cdkDrag [cdkDragDisabled]="!selectedCorp" [ngClass]="{'cursor-normal':!selectedCorp }" >
+                      <div>{{position.desc}} - {{position.positionId}}</div>
+                    </li>
+                  </div>
+                </ul>
+              <!--</li>
+            </ul>-->
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>
+
+
